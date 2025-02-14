@@ -24,7 +24,7 @@ export async function ensureDirectoryExists(dirPath: string) {
 }
 
 export function getPhotoDir() {
-  return join('./public', PHOTO_DIR)
+  return join('./.output/public', PHOTO_DIR)
 }
 
 export async function cleanPhotoDir() {
