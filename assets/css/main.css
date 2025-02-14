@@ -1,0 +1,13 @@
+.fade-in-down-enter-from, .fade-in-down-leave-to {
+  opacity: 0;
+  transform: translateY(-100%);
+}
+
+.fade-in-down-enter-to, .fade-in-down-leave-from {
+  opacity: 1;
+  transform: none;
+}
+
+.fade-in-down-enter-active, .fade-in-down-leave-active {
+  transition: all 0.28s ease;
+}

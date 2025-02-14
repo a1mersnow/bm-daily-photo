@@ -1,7 +1,8 @@
 {
   "name": "nuxt-app",
-  "private": true,
   "type": "module",
+  "private": true,
+  "packageManager": "pnpm@9.12.1+sha512.e5a7e52a4183a02d5931057f7a0dbff9d5e9ce3161e33fa68ae392125b79282a8a8a470a51dfc8a0ed86221442eb2fb57019b0990ed24fab519bf0e1bc5ccfc4",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -10,17 +11,22 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@nuxt/image": "^1.9.0",
+    "dayjs": "^1.11.13",
     "nuxt": "^3.15.4",
     "vue": "latest",
     "vue-router": "latest"
   },
-  "packageManager": "pnpm@9.12.1+sha512.e5a7e52a4183a02d5931057f7a0dbff9d5e9ce3161e33fa68ae392125b79282a8a8a470a51dfc8a0ed86221442eb2fb57019b0990ed24fab519bf0e1bc5ccfc4",
   "devDependencies": {
+    "@antfu/eslint-config": "^4.2.0",
     "@iconify-json/ph": "^1.2.2",
     "@nuxt/eslint": "^1.0.1",
     "@nuxt/icon": "^1.10.3",
+    "@unocss/eslint-plugin": "^65.4.3",
     "@unocss/nuxt": "^65.4.3",
     "@vueuse/nuxt": "^12.5.0",
+    "eslint-plugin-format": "^1.0.1",
+    "typescript": "^5.7.3",
     "unocss": "^65.4.3"
   }
 }
