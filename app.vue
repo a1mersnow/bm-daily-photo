@@ -27,7 +27,7 @@ watch(filledSet, () => {
       image: isFilled(day.date) ? `/${PHOTO_DIR}/${day.date}.png` : '',
     }
   })
-})
+}, { immediate: true })
 
 useHead({
   titleTemplate: () => 'Daily Photo',
