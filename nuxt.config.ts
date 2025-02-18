@@ -22,10 +22,14 @@ export default defineNuxtConfig({
         cache: { maxAge: 0 },
       },
     },
+    serveStatic: 'node',
   },
   eslint: {
     config: {
       standalone: false,
     },
+  },
+  runtimeConfig: {
+    DOMAIN: 'https://onlylovesnow14.synology.me:8888',
   },
 })
