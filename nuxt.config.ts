@@ -18,9 +18,7 @@ export default defineNuxtConfig({
   },
   nitro: {
     routeRules: {
-      '/_ipx/**': {
-        cache: { maxAge: 0 },
-      },
+
     },
   },
   eslint: {
@@ -30,5 +28,10 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     DOMAIN: 'https://onlylovesnow14.synology.me:8888',
+  },
+  image: {
+    ipx: {
+      maxAge: 0,
+    },
   },
 })
