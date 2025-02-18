@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: 'NuxtAppName',
+      name: 'DailyPhoto',
       port: '8888',
       exec_mode: 'cluster',
       instances: 'max',
