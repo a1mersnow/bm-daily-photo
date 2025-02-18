@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Day } from './shared/types/day'
-import type { ToastCompProps, ToastOptions, ToastType } from './shared/types/ui'
+import type { ToastCompProps, ToastOptions } from './shared/types/ui'
 import dayjs from 'dayjs'
 import { PHOTO_DIR } from '~/shared/constants'
 
@@ -27,7 +27,7 @@ watch(filledSet, () => {
       image: isFilled(day.date) ? `/${PHOTO_DIR}/${day.date}.png` : '',
     }
   })
-}, { immediate: true })
+}, { immediate: true, flush: 'sync' })
 
 useHead({
   titleTemplate: () => 'Daily Photo',
