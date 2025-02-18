@@ -16,6 +16,13 @@ export default defineNuxtConfig({
   unocss: {
     preflight: true,
   },
+  nitro: {
+    routeRules: {
+      '/_ipx/**': {
+        cache: { maxAge: 0 },
+      },
+    },
+  },
   eslint: {
     config: {
       standalone: false,
