@@ -7,6 +7,6 @@ export default defineEventHandler(async (event) => {
   const today = dayjs().format('YYYY-MM-DD')
   const { DOMAIN } = useRuntimeConfig()
   return {
-    imageUrl: `${DOMAIN}/${PHOTO_DIR}/${today}.png`,
+    imageUrl: `${DOMAIN}/_ipx/_/${PHOTO_DIR}/${today}.png`,
   }
 })

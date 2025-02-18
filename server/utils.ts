@@ -30,7 +30,7 @@ export function getPhotoDir() {
 export async function cleanPhotoDir() {
   const dir = getPhotoDir()
   const items = await fs.readdir(dir)
-  const threshold = dayjs().subtract(2, 'D')
+  const threshold = dayjs().subtract(2, 'day')
   for (const item of items) {
     const date = basename(item, extname(item))
     if (dayjs(date).isBefore(threshold)) {

@@ -22,7 +22,6 @@ export default defineNuxtConfig({
         cache: { maxAge: 0 },
       },
     },
-    serveStatic: 'node',
   },
   eslint: {
     config: {
