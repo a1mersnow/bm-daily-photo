@@ -6,8 +6,12 @@ import { PHOTO_DIR } from '~/shared/constants'
 
 const MAX_FUTURE_DAY_COUNT = 30
 
-const { data: filledDays, refresh } = useFetch<string[]>('/getFilledDays')
+const { data: filledDays } = useFetch<string[]>('/getFilledDays')
 const filledSet = computed(() => new Set(filledDays.value))
+
+function refresh() {
+  location.reload()
+}
 
 function isFilled(date: string) {
   return filledSet.value.has(date)
