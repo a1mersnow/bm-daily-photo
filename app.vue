@@ -164,7 +164,7 @@ function toastError(m: string) {
               <Icon
                 name="ph:upload-fill"
                 class="text-primary"
-                :class="d.image ? 'text-4px' : 'text-8xl'"
+                :class="d.image ? 'text-4xl' : 'text-8xl'"
               />
               <input
                 type="file"
