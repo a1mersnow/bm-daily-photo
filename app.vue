@@ -6,19 +6,22 @@ import { PHOTO_DIR } from '~/shared/constants'
 
 const MAX_FUTURE_DAY_COUNT = 30
 
-const { data: filledDays } = useFetch<string[]>('/getFilledDays')
+const { data: filledDays, execute } = useFetch<string[]>('/getFilledDays')
 const filledSet = computed(() => new Set(filledDays.value))
 
+const renderKey = ref(0)
 function refresh() {
-  location.reload()
+  renderKey.value++
+  execute()
 }
 
 function isFilled(date: string) {
   return filledSet.value.has(date)
 }
 
-const futureDays = computed<Day[]>(() => {
-  return createDays().map((day) => {
+const futureDays = ref<Day[]>([])
+watch(filledSet, () => {
+  futureDays.value = createDays().map((day) => {
     return {
       ...day,
       image: isFilled(day.date) ? `/${PHOTO_DIR}/${day.date}.png` : '',
@@ -152,6 +155,7 @@ function toastError(m: string) {
         <div class="group relative aspect-ratio-16/9 bg-primary/10">
           <NuxtImg
             v-if="d.image"
+            :key="renderKey"
             class="h-full w-full"
             width="1920"
             height="1080"
