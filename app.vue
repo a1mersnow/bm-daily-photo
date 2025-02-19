@@ -130,7 +130,7 @@ function toastError(m: string) {
         <input
           type="file"
           multiple
-          accept="image/png"
+          accept="image/*"
           class="sr-only"
           @change="handleMultiChange"
         >
@@ -176,7 +176,7 @@ function toastError(m: string) {
               />
               <input
                 type="file"
-                accept="image/png"
+                accept="image/*"
                 class="sr-only"
                 @change="handleSingleChange(d, $event)"
               >
