@@ -137,8 +137,8 @@ function toastError(m: string) {
 <template>
   <template v-if="mounted">
     <div v-if="hasSetPass" p2 grid="~ gap2">
-      <div flex="~ items-center justify-between">
-        <div flex="~ items-center gap-x-3">
+      <div flex="~ items-center col lg:row lg:justify-between gap-3">
+        <div flex="~ col lg:row items-center gap-3">
           <label
             class="cursor-pointer rd-full bg-primary px5 py2 text-sm text-white"
             :class="multiUploading ? 'op50 pointer-events-none' : ''"
@@ -157,8 +157,8 @@ function toastError(m: string) {
           </p>
         </div>
 
-        <div flex="~ items-center gap-x-2" text-sm>
-          <div>操作密码：</div>
+        <div flex="~ col lg:row items-center gap-x-2 gap-y-1" text-sm>
+          <div>操作密码</div>
           <input
             v-model="passFromUser"
             type="password" border="~ solid primary" class="lh-[1.2]" rd-full px4 py2
@@ -227,6 +227,7 @@ function toastError(m: string) {
           w-80 rd-full px8 py3 text-center text-lg outline-none
           placeholder="密码请咨询开发者"
           autocomplete="new-password"
+          @keydown.enter="confirmInitialPass"
         >
 
         <button
