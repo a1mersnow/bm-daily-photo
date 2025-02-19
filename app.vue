@@ -153,7 +153,7 @@ function toastError(m: string) {
             >
           </label>
           <p class="text-sm text-black/80 font-normal">
-            文件名需满足格式：2025-01-01
+            文件名需满足格式：<span text-black:60 font-mono font-italic>YYYY-MM-DD</span>，例如：<span text-black:60 font-mono font-italic>2025-01-01</span>
           </p>
         </div>
 
