@@ -7,6 +7,15 @@ export default defineEventHandler(async (event) => {
   const formData = await readMultipartFormData(event)
   const photoDir = getPhotoDir()
   if (formData) {
+    const passItem = formData.find(x => x.name === 'pass')
+    if (passItem == null) {
+      throw createError({ statusCode: 400 })
+    }
+    const pass = passItem.data.toString()
+    const { PASSWORD } = useRuntimeConfig()
+    if (pass !== PASSWORD)
+      throw createError({ statusCode: 401, message: '操作密码错误' })
+
     let success = false
     await ensureDirectoryExists(photoDir)
     for (const item of formData) {

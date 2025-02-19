@@ -28,6 +28,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     DOMAIN: 'https://onlylovesnow14.synology.me:8888',
+    PASSWORD: 'Booming2025QWERTY',
   },
   image: {
     ipx: {

@@ -2,12 +2,23 @@
 import type { Day } from './shared/types/day'
 import type { ToastCompProps, ToastOptions } from './shared/types/ui'
 import dayjs from 'dayjs'
+import { FetchError } from 'ofetch'
 import { PHOTO_DIR } from '~/shared/constants'
 
 const MAX_FUTURE_DAY_COUNT = 30
 
 const { data: filledDays, execute } = useFetch<string[]>('/getFilledDays')
 const filledSet = computed(() => new Set(filledDays.value))
+
+const passFromUser = useLocalStorage('PASSWORD_FROM_USER', '')
+const initialPassFromUserDraft = ref('')
+const hasSetPass = useLocalStorage('HAS_SET_PASS', false)
+const mounted = useMounted()
+
+function confirmInitialPass() {
+  passFromUser.value = initialPassFromUserDraft.value
+  hasSetPass.value = true
+}
 
 const renderKey = ref(0)
 function refresh() {
@@ -51,6 +62,7 @@ async function handleMultiChange(event: Event) {
   if (files.length === 0)
     return
   const formData = new FormData()
+  formData.append('pass', passFromUser.value)
   for (const f of files)
     formData.append('files', f)
   try {
@@ -62,11 +74,12 @@ async function handleMultiChange(event: Event) {
     toastSuccess('上传成功')
     refresh()
   }
-  catch {
-    toastError('上传失败')
+  catch (e) {
+    toastError(e instanceof FetchError ? e.data.message : '上传失败')
   }
   finally {
     multiUploading.value = false
+    el.value = ''
   }
 }
 
@@ -78,6 +91,7 @@ async function handleSingleChange(day: Day, event: Event) {
   const formData = new FormData()
   formData.append('date', day.date)
   formData.append('file', file)
+  formData.append('pass', passFromUser.value)
   try {
     day.uploading = true
     await $fetch('/setDailyImage', {
@@ -87,11 +101,12 @@ async function handleSingleChange(day: Day, event: Event) {
     toastSuccess('上传成功')
     refresh()
   }
-  catch {
-    toastError('上传失败')
+  catch (e) {
+    toastError(e instanceof FetchError ? e.data.message : '上传失败')
   }
   finally {
     day.uploading = false
+    el.value = ''
   }
 }
 
@@ -120,72 +135,109 @@ function toastError(m: string) {
 </script>
 
 <template>
-  <div p2 grid="~ gap2">
-    <div flex="~ items-center gap-x-3">
-      <label
-        class="cursor-pointer rd-full bg-primary px5 py2 text-sm text-white"
-        :class="multiUploading ? 'op50 pointer-events-none' : ''"
-      >
-        {{ multiUploading ? '上传中...' : '批量上传' }}
-        <input
-          type="file"
-          multiple
-          accept="image/*"
-          class="sr-only"
-          @change="handleMultiChange"
-        >
-      </label>
-      <p class="text-sm text-black/80 font-normal">
-        文件名需满足格式：2025-01-01
-      </p>
-    </div>
-    <div grid="~ cols-minmax-300px gap2">
-      <div
-        v-for="d in futureDays" :key="d.date"
-        class="of-hidden rd bg-primary/10"
-      >
-        <div class="px2 text-sm text-primary lh-[2]" flex="~ items-center justify-between">
-          <div>
-            {{ d.date }}
-          </div>
-          <Icon v-if="d.uploading" name="ph:cloud-arrow-up" class="animate-bounce" />
-          <Icon v-else-if="d.image" name="ph:cloud" />
-          <Icon v-else name="ph:cloud-slash" />
-        </div>
-        <div class="group relative aspect-ratio-16/9 bg-primary/10">
-          <NuxtImg
-            v-if="d.image"
-            :key="renderKey"
-            class="h-full w-full"
-            width="1920"
-            height="1080"
-            sizes="300px"
-            :src="d.image"
-          />
-
-          <div
-            flex="~ items-center justify-center"
-            absolute inset-0 h-full p2 transition
-            :class="!d.image ? '' : 'op0 group-hover:op60'"
+  <template v-if="mounted">
+    <div v-if="hasSetPass" p2 grid="~ gap2">
+      <div flex="~ items-center justify-between">
+        <div flex="~ items-center gap-x-3">
+          <label
+            class="cursor-pointer rd-full bg-primary px5 py2 text-sm text-white"
+            :class="multiUploading ? 'op50 pointer-events-none' : ''"
           >
-            <label cursor-pointer>
-              <Icon
-                name="ph:upload-fill"
-                class="text-primary"
-                :class="d.image ? 'text-4xl' : 'text-8xl'"
-              />
-              <input
-                type="file"
-                accept="image/*"
-                class="sr-only"
-                @change="handleSingleChange(d, $event)"
-              >
-            </label>
+            {{ multiUploading ? '上传中...' : '批量上传' }}
+            <input
+              type="file"
+              multiple
+              accept="image/*"
+              class="sr-only"
+              @change="handleMultiChange"
+            >
+          </label>
+          <p class="text-sm text-black/80 font-normal">
+            文件名需满足格式：2025-01-01
+          </p>
+        </div>
+
+        <div flex="~ items-center gap-x-2" text-sm>
+          <div>操作密码：</div>
+          <input
+            v-model="passFromUser"
+            type="password" border="~ solid primary" class="lh-[1.2]" rd-full px4 py2
+            outline-none
+            placeholder="请输入操作密码"
+            autocomplete="new-password"
+          >
+        </div>
+      </div>
+      <div grid="~ cols-minmax-300px gap2">
+        <div
+          v-for="d in futureDays" :key="d.date"
+          class="of-hidden rd bg-primary/10"
+        >
+          <div class="px2 text-sm text-primary lh-[2]" flex="~ items-center justify-between">
+            <div>
+              {{ d.date }}
+            </div>
+            <Icon v-if="d.uploading" name="ph:cloud-arrow-up" class="animate-bounce" />
+            <Icon v-else-if="d.image" name="ph:cloud" />
+            <Icon v-else name="ph:cloud-slash" />
+          </div>
+          <div class="group relative aspect-ratio-16/9 bg-primary/10">
+            <NuxtImg
+              v-if="d.image"
+              :key="renderKey"
+              class="h-full w-full"
+              width="1920"
+              height="1080"
+              sizes="300px"
+              :src="d.image"
+            />
+
+            <div
+              flex="~ items-center justify-center"
+              absolute inset-0 h-full p2 transition
+              :class="!d.image ? '' : 'op0 group-hover:op60'"
+            >
+              <label cursor-pointer>
+                <Icon
+                  name="ph:upload-fill"
+                  class="text-primary"
+                  :class="d.image ? 'text-4xl' : 'text-8xl'"
+                />
+                <input
+                  type="file"
+                  accept="image/*"
+                  class="sr-only"
+                  @change="handleSingleChange(d, $event)"
+                >
+              </label>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+
+    <div v-else flex="~ items-center justify-center" fixed inset-0>
+      <div flex="~ col items-center gap-4" text-sm>
+        <div text-lg>
+          请输入操作密码
+        </div>
+        <input
+          v-model="initialPassFromUserDraft"
+          type="password" border="2px solid primary" class="lh-[1.2]"
+          w-80 rd-full px8 py3 text-center text-lg outline-none
+          placeholder="密码请咨询开发者"
+          autocomplete="new-password"
+        >
+
+        <button
+          class="w-30 rd-full bg-primary px4 py3 text-center text-base text-white"
+          @click="confirmInitialPass"
+        >
+          确定
+        </button>
+      </div>
+    </div>
+  </template>
 
   <Transition name="fade-in-down">
     <Toast v-if="toastShow" :options="msgOptions!" />
